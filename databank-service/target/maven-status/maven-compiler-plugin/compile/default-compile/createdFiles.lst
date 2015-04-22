@@ -1,0 +1,10 @@
+com\uniclick\databank\service\common\ConfigReader.class
+com\uniclick\databank\service\ut\service\CustomJobRunService.class
+com\uniclick\databank\service\common\DbBean.class
+com\uniclick\databank\service\ut\persist\UTCustomJobTable.class
+com\uniclick\databank\service\ut\pojo\TblCustomReportJob.class
+com\uniclick\databank\service\common\Constants.class
+com\uniclick\databank\service\App.class
+com\uniclick\databank\service\ut\persist\UTCustomReportTable.class
+com\uniclick\databank\service\ut\pojo\TblCustomJobBasic.class
+com\uniclick\databank\service\ut\SepcialJobInfo.class

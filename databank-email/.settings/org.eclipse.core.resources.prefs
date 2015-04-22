@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+encoding//src/main/java=UTF-8
+encoding//src/main/java/com/uniclick/databank/email/MailConfigReader.java=UTF-8
+encoding//src/main/java/com/uniclick/databank/email/MailConstants.java=UTF-8
+encoding//src/main/java/com/uniclick/databank/email/SendMailToAdmin.java=UTF-8
+encoding//src/main/java/com/uniclick/databank/email/SendMailToUser.java=UTF-8
+encoding//src/test/java=UTF-8
