@@ -62,6 +62,7 @@ public class CustomJobRunService {
 			List<TblCustomReportJob> exectoryJobList = utCustomReportTable.getExectoryJobs();
 			while(runningJobNum < MAXJOB && exectoryJobList.size() > 0) {
 				TblCustomReportJob reportJob = exectoryJobList.get(0);
+				logger.info("JOB " + reportJob.getId() + " MR start running");
 				this.executeAssignJob(reportJob);
 				runningJobNum = utCustomReportTable.getRunningJobNum();
 				exectoryJobList = utCustomReportTable.getExectoryJobs();
