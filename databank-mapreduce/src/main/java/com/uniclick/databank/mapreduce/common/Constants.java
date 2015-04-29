@@ -11,7 +11,7 @@ public class Constants {
 	/**
 	 * SYS_PATH_RUN_JOB_JAR
 	 */
-	public static final String SYS_PATH_RUN_JOB_JAR = "hdfs://namenode/user/pingjie/databank-mapreduce-2.0.0.jar";
+	public static final String SYS_PATH_RUN_JOB_JAR = "hdfs://namenode/user/GlobalArchive/databank-mapreduce-2.0.0.jar";
 	//--------------------------------------SYSTEM End--------------------------------------//
 	//--------------------------------------HADOOP Conf Begin--------------------------------------//
 	/**
