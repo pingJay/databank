@@ -28,7 +28,6 @@ import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 
-import com.uniclick.databank.mapreduce.common.hadoop.HDFSUtil;
 import com.uniclick.databank.mapreduce.job.StandardTarget;
 
 
