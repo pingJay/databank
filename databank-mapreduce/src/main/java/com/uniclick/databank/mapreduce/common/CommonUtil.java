@@ -49,6 +49,16 @@ public class CommonUtil {
 	public static final String UIP = "唯一IP数";
 	public static final String AVGDURATION = "页面平均停留时间";
 	public static final String VISIT = "访问数";
+	private static final String OS_ANDROID = "0";
+	private static final String OS_IOS = "1";
+	private static final String OS_WP = "2";
+	private static final String OS_OTHER = "3";
+	private static final String IMEI = "imei";
+	private static final String MAC = "mac";
+	private static final String ANDROID = "android";
+	private static final String IDFA = "idfa";
+	private static final String OPID = "opid";
+	private static final String OS = "os";
 	
 	private static Configuration conf = new Configuration();
 	/* 本地测试专用
@@ -59,6 +69,78 @@ public class CommonUtil {
 	}*/
 	
 	private static SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd");
+	
+	
+	public static boolean isMobile(String uri) {
+		if(null != uri && uri.contains("imei=") && uri.contains("mac=") && uri.contains("android=")
+				&& uri.contains("idfa=") && uri.contains("opid=") && uri.contains("os=")){
+			return true;
+		}
+		return false;
+	}
+	
+	public static String getMobileDeviceId(String uri,String ip){
+		Map<String,String> mobileMap = new HashMap<String,String>();
+		uri = decoderURL(uri);
+		int startIndex = uri.indexOf(IMEI);
+		int osIndex = uri.indexOf(OS);
+		if(startIndex > -1 && osIndex > -1) {
+			int separatorIndex = uri.indexOf("/", osIndex);
+			if(separatorIndex > -1) {
+				uri = uri.substring(startIndex, separatorIndex);
+			}else{
+				uri = uri.substring(startIndex);
+			}
+		}else{
+			return ip;
+		}
+		String[] arrUri = uri.split("&",-1);
+		for(String mobileInfo : arrUri) {
+			String[] arrMobileInfo = mobileInfo.split("=",-1);
+			if(arrMobileInfo.length == 2) {
+				mobileMap.put(arrMobileInfo[0].trim(), "".equals(arrMobileInfo[1].trim()) ? "NULL" : arrMobileInfo[1].trim());
+			}
+		}
+			
+		/*
+		 * 根据不同的操作系统，取不同的值
+		 */
+		String os = mobileMap.get(OS);
+		if(OS_ANDROID.equals(os)) {
+			if(!"NULL".equals(mobileMap.get(IMEI))) {
+				return mobileMap.get(IMEI);
+			}else if(!"NULL".equals(mobileMap.get(ANDROID))) {
+				return mobileMap.get(ANDROID);
+			}else if(! "NULL".equals(mobileMap.get(MAC))) {
+				return mobileMap.get(MAC);
+			}
+		}else if(OS_IOS.equals(os)) {
+			if(!"NULL".equals(mobileMap.get(IDFA))) {
+				return mobileMap.get(IDFA);
+			}else if(!"NULL".equals(mobileMap.get(OPID))) {
+				return mobileMap.get(OPID);
+			}else if(! "NULL".equals(mobileMap.get(MAC))) {
+				return mobileMap.get(MAC);
+			}
+		}else if(OS_WP.equals(os) || OS_OTHER.equals(os)) {
+			if (! "NULL".equals(mobileMap.get(MAC))) {
+				return mobileMap.get(MAC);
+			}
+		}
+		return ip;
+	}
+	
+	public static String decoderURL(String url) {
+		String url_bak = url;
+		try {
+			
+			url = java.net.URLDecoder.decode(url, "utf-8");
+		} catch (Exception e1) {
+		// TODO Auto-generated catch block
+			url = url_bak;
+		}
+		return url;
+	}
 	
 	/**
 	 * 

@@ -143,6 +143,29 @@ public class UTCustomReportTable {
 	
 	/**
 	 * 
+	 * @Title: cleanProblemJob
+	 * @Description: TODO(将今天之前的开始运行且还没有运行完的任务状态修改为失败)
+	 * @param @return    设定文件
+	 * @return boolean    返回类型
+	 * @throws
+	 */
+	public boolean cleanProblemJob() {
+		String sql = "UPDATE `tbl_custom_report_job` set `Status`=? where `Status`=? and DATE_FORMAT(CreatedAt,'%Y-%m-%d') < DATE_FORMAT(NOW(),'%Y-%m-%d')";
+		try {
+			dbBean.setPrepareStatement(sql);
+			dbBean.setInt(1, Constants.JOB_STATUS_FAILED);
+			dbBean.setInt(2, Constants.JOB_STATUS_STARTJOB);
+			if(dbBean.executeUpdate() > 0) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	/**
+	 * 
 	 * @Title: getRunningJobNum
 	 * @Description: TODO(获取当前运行中的任务数量)
 	 * @param @return    设定文件

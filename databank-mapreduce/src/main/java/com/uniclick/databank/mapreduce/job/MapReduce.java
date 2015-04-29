@@ -78,10 +78,22 @@ public class MapReduce {
 				String regex = "^[0-9]+$";
 				Matcher a = Pattern.compile(regex).matcher(rowArr[7]);
 				if(a.matches()&&status){
-					kt.set(rowArr[7]+"\t"+rowArr[8]+"\t"+rowArr[11]+"\t"+rowArr[5]+"\t"+"cookie");
+					String advid  = "".equals(rowArr[7])?"0":rowArr[7];
+					String orderid = "".equals(rowArr[8])?"0":rowArr[8];
+					String ip = "".equals(rowArr[6])?"NULL":rowArr[6];
+					String cookie = "".equals(rowArr[5])?"NULL":rowArr[5];
+					String region = "".equals(rowArr[11])?"NULL":rowArr[11];
+					String keyPre = advid+"\t"+ orderid + "\t"+ region;
+					if(rowLen > 22 && CommonUtil.isMobile(rowArr[17])){//imp
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(rowArr[17],ip)+"\t"+"mobile");
+					}else if(rowLen > 14 && CommonUtil.isMobile(rowArr[14])){
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(rowArr[14],ip)+"\t"+"mobile");
+					}else{
+						kt.set(keyPre+"\t"+cookie+"\t"+"cookie");
+					}
 					//厂商 , 活动 , 省份 ,  cookie
 					context.write(kt, vt);
-					kt.set(rowArr[7]+"\t"+rowArr[8]+"\t"+rowArr[11]+"\t"+rowArr[6]+"\t"+"ip");
+					kt.set(keyPre +"\t"+ ip +"\t"+"ip");
 					//厂商 , 活动 , 省份 , ip
 					context.write(kt, vt);
 				}
