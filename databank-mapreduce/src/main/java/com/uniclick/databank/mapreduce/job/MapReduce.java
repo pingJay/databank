@@ -78,10 +78,23 @@ public class MapReduce {
 				String regex = "^[0-9]+$";
 				Matcher a = Pattern.compile(regex).matcher(rowArr[7]);
 				if(a.matches()&&status){
-					kt.set(rowArr[7]+"\t"+rowArr[8]+"\t"+rowArr[11]+"\t"+rowArr[5]+"\t"+"cookie");
+					String advid  = "".equals(rowArr[7])?"0":rowArr[7];
+					String orderid = "".equals(rowArr[8])?"0":rowArr[8];
+					String ip = "".equals(rowArr[6])?"NULL":rowArr[6];
+					String cookie = "".equals(rowArr[5])?"NULL":rowArr[5];
+					String region = "".equals(rowArr[11])?"NULL":rowArr[11];
+					String keyPre = advid+"\t"+ orderid + "\t"+ region;
+					
+					if(rowLen > 22 && CommonUtil.isMobile(rowArr[17])){//imp
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(rowArr[17],ip)+"\t"+"mobile");
+					}else if(rowLen > 14 && CommonUtil.isMobile(rowArr[14])){
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(rowArr[14],ip)+"\t"+"mobile");
+					}else{
+						kt.set(keyPre+"\t"+cookie+"\t"+"cookie");
+					}
 					//厂商 , 活动 , 省份 ,  cookie
 					context.write(kt, vt);
-					kt.set(rowArr[7]+"\t"+rowArr[8]+"\t"+rowArr[11]+"\t"+rowArr[6]+"\t"+"ip");
+					kt.set(keyPre +"\t"+ ip +"\t"+"ip");
 					//厂商 , 活动 , 省份 , ip
 					context.write(kt, vt);
 				}
@@ -155,7 +168,7 @@ public class MapReduce {
 				if("ip".equals(arr[0])){
 					vip++;
 					pv += Integer.valueOf(arr[1]);
-				}else if("cookie".equals(arr[0])){
+				}else if("cookie".equals(arr[0]) || "mobile".equals(arr[0])){
 					uv++;
 				}
 			}
@@ -242,7 +255,7 @@ public class MapReduce {
 				if(arrLen>7){
 						int len = companyIDArr.length;
 						boolean status = false;
-						String advid = arr[7];//厂商ID
+						String advid  = "".equals(arr[7])?"0":arr[7];
 						for(int i=0 ;i<len ;i++){
 							if(companyIDArr[i].equals( advid)){
 								status = true;
@@ -250,10 +263,19 @@ public class MapReduce {
 							}
 						}
 						if(status){
+							String ip = "".equals(arr[6])?"NULL":arr[6];
+							String cookie = "".equals(arr[5])?"NULL":arr[5];
+							if(arrLen > 22 && CommonUtil.isMobile(arr[17])) {
+								kt.set(advid +"\t"+CommonUtil.getMobileDeviceId(arr[17],ip)+"\t"+"mobile");//advid+deviceid
+							}else if(arrLen > 14 && CommonUtil.isMobile(arr[14])) {
+								kt.set(advid +"\t"+CommonUtil.getMobileDeviceId(arr[14],ip)+"\t"+"mobile");
+							}else{
+								kt.set(advid+"\t"+cookie+"\t"+"cookie");
+							}	
+							context.write(kt, vt);
 							kt.set(advid+"\t"+arr[6]+"\t"+"ip");//advid+ip
 							context.write(kt, vt);
-							kt.set(advid+"\t"+arr[5]+"\t"+"cookie");//advid+cookie
-							context.write(kt, vt);
+							
 						}
 				}
 		}
@@ -361,10 +383,20 @@ public class MapReduce {
 					}
 				}
 				if(a.matches()&&b.matches()&&c.matches()&&status){
-					kt.set(advid+"\t"+orderid+"\t"+siteid+"\t"+inventory+"\t"+arr[6]+"\t"+"ip");
+					String keyPre = advid+"\t"+orderid+"\t"+siteid+"\t"+inventory;
+					String ip = "".equals(arr[6])?"NULL":arr[6];
+					String cookie = "".equals(arr[5])?"NULL":arr[5];
+					if(arrLen > 22 && CommonUtil.isMobile(arr[17])){//imp
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[17],ip)+"\t"+"mobile");
+					}else if(arrLen > 14 && CommonUtil.isMobile(arr[14])){
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[14],ip)+"\t"+"mobile");
+					}else{
+						kt.set(keyPre+"\t"+cookie+"\t"+"cookie");
+					}
 					context.write(kt, vt);
-					kt.set(advid+"\t"+orderid+"\t"+siteid+"\t"+inventory+"\t"+arr[5]+"\t"+"cookie");
+					kt.set(advid+"\t"+orderid+"\t"+siteid+"\t"+inventory+"\t"+ip+"\t"+"ip");
 					context.write(kt, vt);
+					
 				}
 			}
 		}
@@ -468,9 +500,21 @@ public class MapReduce {
 				Matcher b = Pattern.compile(regex).matcher(siteid);
 				Matcher c = Pattern.compile(regex).matcher(advid);  
 				if(b.matches()&&c.matches()&&status){
-					kt.set(advid+"\t"+arr[8]+"\t"+siteid+"\t"+arr[5]+"\t"+"cookie");
+					String orderid = "".equals(arr[8])?"0":arr[8];
+					String ip = "".equals(arr[6])?"NULL":arr[6];
+					String cookie = "".equals(arr[5])?"NULL":arr[5];
+					String region = "".equals(arr[11])?"NULL":arr[11];
+					String keyPre = advid+"\t"+orderid+"\t"+siteid;
+					
+					if(arrLen > 22 && CommonUtil.isMobile(arr[17])){//imp
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[17],ip)+"\t"+"mobile");
+					}else if(arrLen > 14 && CommonUtil.isMobile(arr[14])){
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[14],ip)+"\t"+"mobile");
+					}else{
+						kt.set(keyPre+"\t"+cookie+"\t"+"cookie");
+					}
 					context.write(kt, vt);
-					kt.set(advid+"\t"+arr[8]+"\t"+siteid+"\t"+arr[6]+"\t"+"ip");
+					kt.set(keyPre+"\t"+ip+"\t"+"ip");
 					context.write(kt, vt);
 				}
 			}
@@ -572,10 +616,21 @@ public class MapReduce {
 								}
 							}
 							if(c.matches()&&status){
-								kt.set(advid+"\t"+orderid+"\t"+arr[6]+"\t"+"ip");
+								String ip = "".equals(arr[6])?"NULL":arr[6];
+								String cookie = "".equals(arr[5])?"NULL":arr[5];
+								String keyPre = advid+"\t"+orderid;
+								
+								if(arr.length > 22 && CommonUtil.isMobile(arr[17])){//imp
+									kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[17],ip)+"\t"+"mobile");
+								}else if(arr.length > 14 && CommonUtil.isMobile(arr[14])){
+									kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[14],ip)+"\t"+"mobile");
+								}else{
+									kt.set(keyPre+"\t"+cookie+"\t"+"cookie");
+								}
 								context.write(kt, vt);
-								kt.set(advid+"\t"+orderid+"\t"+arr[5]+"\t"+"cookie");
+								kt.set(keyPre + "\t"+ ip +"\t"+"ip");
 								context.write(kt, vt);
+								
 							}
 						}
 			}
@@ -667,9 +722,10 @@ public class MapReduce {
 			public void map (LongWritable key , Text value , Context context)throws IOException ,InterruptedException{
 				String [] arr = value.toString().split("\t");
 				if(arr.length>8){
-					String advid = arr[7];
-					String orderitemid = arr[2];
-					String siteid = arr[3];
+					String advid  = "".equals(arr[7])?"0":arr[7];
+					String orderitemid = "".equals(arr[2])?"0":arr[2];
+					String siteid = "".equals(arr[3])?"0":arr[3];
+					
 					String regex = "^[0-9]+$";
 					Matcher a = Pattern.compile(regex).matcher(orderitemid);
 					Matcher b = Pattern.compile(regex).matcher(siteid);
@@ -682,12 +738,21 @@ public class MapReduce {
 							break;
 						}
 					}
-					if (a.matches() && b.matches()&&c.matches()&&status ) {
-						kt.set(advid+"\t"+arr[8]+"\t"+siteid+"\t"+orderitemid+"\t"+arr[6]+"\t"+"ip");
-						//orderitemid company orderid mediaid ip
+					if (a.matches() && b.matches() && c.matches() && status ) {
+						String orderid = "".equals(arr[8])?"0":arr[8];
+						String ip = "".equals(arr[6])?"NULL":arr[6];
+						String cookie = "".equals(arr[5])?"NULL":arr[5];
+						String keyPre = advid+"\t"+ orderid+ "\t" +siteid+"\t"+orderitemid;
+						
+						if(arr.length > 22 && CommonUtil.isMobile(arr[17])){//imp
+							kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[17],ip)+"\t"+"mobile");
+						}else if(arr.length > 14 && CommonUtil.isMobile(arr[14])){
+							kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[14],ip)+"\t"+"mobile");
+						}else{
+							kt.set(keyPre+"\t"+cookie+"\t"+"cookie");
+						}
 						context.write(kt, vt);
-						kt.set(advid+"\t"+arr[8]+"\t"+siteid+"\t"+orderitemid+"\t"+arr[5]+"\t"+"cookie");
-						//orderitemid company orderid mediaid cookie
+						kt.set(keyPre + "\t"+ ip +"\t"+"ip");
 						context.write(kt, vt);
 					}
 				}
@@ -719,9 +784,10 @@ public class MapReduce {
 			String [] arr = value.toString().split("\t");
 			if(arr.length>8){
 				int len  = orderIDArr.length;
+				String orderid = "".equals(arr[8])?"0":arr[8];
 				boolean status = false;
 				for(int i=0 ; i<len ;i++){
-					if(orderIDArr[i].equals(arr[8])){
+					if(orderIDArr[i].equals(orderid)){
 						status = true;
 						break;
 					}
@@ -730,11 +796,22 @@ public class MapReduce {
 				Matcher a = Pattern.compile(regex).matcher(arr[7]);
 				Matcher b = Pattern.compile(regex).matcher(arr[3]);
 				if (a.matches()&& b.matches()&&status) {
-					kt.set(arr[7]+"\t"+arr[8]+"\t"+arr[3]+"\t"+arr[11]+"\t"+arr[6]+"\t"+"ip");
-					//company orderid mediaid ip
+					String advid  = "".equals(arr[7])?"0":arr[7];
+					String ip = "".equals(arr[6])?"NULL":arr[6];
+					String cookie = "".equals(arr[5])?"NULL":arr[5];
+					String media = "".equals(arr[3])?"NULL":arr[3];
+					String region = "".equals(arr[11])?"NULL":arr[11];
+					String keyPre = advid + "\t"+ orderid + "\t" + media +"\t" + region;
+					
+					if(arr.length > 22 && CommonUtil.isMobile(arr[17])){//imp
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[17],ip)+"\t"+"mobile");
+					}else if(arr.length > 14 && CommonUtil.isMobile(arr[14])){
+						kt.set(keyPre+"\t"+CommonUtil.getMobileDeviceId(arr[14],ip)+"\t"+"mobile");
+					}else{
+						kt.set(keyPre+"\t"+cookie+"\t"+"cookie");
+					}
 					context.write(kt, vt);
-					kt.set(arr[7]+"\t"+arr[8]+"\t"+arr[3]+"\t"+arr[11]+"\t"+arr[5]+"\t"+"cookie");
-					//company orderid mediaid cookie 
+					kt.set(keyPre + "\t"+ ip +"\t"+"ip");
 					context.write(kt, vt);
 				}
 			}

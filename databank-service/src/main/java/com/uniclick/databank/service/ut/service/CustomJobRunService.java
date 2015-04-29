@@ -54,7 +54,12 @@ public class CustomJobRunService {
 	
 	public void run(){
 		this.init();
-		
+		/*
+		 * 清理库中执行超过一天任然没有完成的任务，将这个任务状态直接改为失败
+		 */
+		if(!utCustomReportTable.cleanProblemJob()) {
+			logger.error("clean history Job faild");
+		}
 		int runningJobNum = utCustomReportTable.getRunningJobNum();
 		if(runningJobNum >= MAXJOB) {
 			logger.info("running Job number exceed MAX value");
