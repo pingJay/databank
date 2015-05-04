@@ -1959,7 +1959,7 @@ public class MapReduce {
 		
 		public void map (LongWritable key , Text value , Context context)throws IOException ,InterruptedException{
 			String [] arr = value.toString().split("\t");
-			int i = Integer.valueOf(arr[2]);
+			int i = Integer.valueOf(arr[2].trim());
 			kt.set(arr[0]+"\t"+arr[1]+"\t"+(i>frequency?frequency:i));
 			vt.set(i);
 			context.write(kt, vt);
