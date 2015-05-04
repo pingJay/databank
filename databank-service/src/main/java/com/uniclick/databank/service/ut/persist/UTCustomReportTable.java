@@ -155,7 +155,7 @@ public class UTCustomReportTable {
 			dbBean.setPrepareStatement(sql);
 			dbBean.setInt(1, Constants.JOB_STATUS_FAILED);
 			dbBean.setInt(2, Constants.JOB_STATUS_STARTJOB);
-			if(dbBean.executeUpdate() > 0) {
+			if(dbBean.executeUpdate() >= 0) {
 				return true;
 			}
 		} catch (SQLException e) {
