@@ -83,7 +83,7 @@ public class RunAnalyOrderSiteFrequencyJob implements RunCustomJob{
 			if(CommonUtil.judgeDir(sumClkUcOutPutDir)){
 				CommonUtil.delete(sumClkUcOutPutDir);
 			}
-			if(!jobControl.SumOrderSiteFrequencyPVUV(analyOutPutDir, sumClkUcOutPutDir ,mrOptionModel.getOrder(), "clk,uc")){
+			if(!jobControl.SumOrderSiteFrequencyPVUV(analyOutPutDir, sumClkUcOutPutDir ,mrOptionModel.getFrequency(), "clk,uc")){
 				logger.error("RunAnalyOrderSiteFrequencyJob SumOrderSiteFrequencyPVUV clk proccess is faild");
 				return false;
 			}

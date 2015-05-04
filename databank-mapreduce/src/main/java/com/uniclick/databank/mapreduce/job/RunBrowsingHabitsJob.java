@@ -29,7 +29,7 @@ public class RunBrowsingHabitsJob implements RunCustomJob{
 	public boolean run(String beginDate,String endDate,String jobOptins,String resultnorm) {
 		boolean isSuccessful = true;
 		MapReduceJobOptionModel mrOptionModel = JobOptionsParse.parse(jobOptins);
-		String strDate =	CommonUtil.strStartAndEndTime(mrOptionModel.getOrderbegion(), mrOptionModel.getOrderenddate());//返回日志时间
+		String strDate =	CommonUtil.strStartAndEndTime(beginDate,endDate);//返回日志时间
 		String analyOutPutDir = "hdfs://namenode/user/deepsight/tmp/"+beginDate + "---" + endDate +"/AnalyBrowsingHabits/output";
 		String sumOutPutDir = "hdfs://namenode/user/deepsight/tmp/"+beginDate + "---" + endDate +"/SumBrowsingHabits/output";
 		String endOutPutDir = "hdfs://namenode/user/deepsight/tmp/"+beginDate + "---" + endDate +"/EndBrowsingHabits/output";
